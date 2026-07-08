@@ -1,0 +1,912 @@
+**Schema (MySQL v9)**
+
+    -- =========================================
+    -- NULL FUNCTIONS & STRING FUNCTIONS IN MYSQL
+    -- =========================================
+    
+    -- =========================================
+    -- NULL FUNCTIONS PRACTICE
+    -- =========================================
+    
+    -- =========================================
+    -- TABLE 1 : EMPLOYEES
+    -- =========================================
+    
+    CREATE TABLE Employees (
+        emp_id INT,
+        name VARCHAR(50),
+        salary INT,
+        bonus INT,
+        manager_id INT
+    );
+    
+    INSERT INTO Employees VALUES
+    (1, 'Amit', 50000, NULL, 101),
+    (2, 'John', NULL, 5000, 102),
+    (3, 'Sara', 60000, NULL, NULL),
+    (4, 'David', NULL, NULL, 103),
+    (5, 'Priya', 45000, 3000, 101),
+    (6, 'Kiran', NULL, NULL, NULL),
+    (7, 'Ravi', 70000, 7000, 102),
+    (8, 'Neha', NULL, 2000, NULL);
+    
+    -- =========================================
+    -- TABLE 2 : ORDERS
+    -- =========================================
+    
+    CREATE TABLE Orders (
+        order_id INT,
+        customer_name VARCHAR(50),
+        amount INT,
+        discount INT,
+        coupon_code VARCHAR(20)
+    );
+    
+    INSERT INTO Orders VALUES
+    (101, 'Amit', 1000, NULL, 'DISC10'),
+    (102, 'John', NULL, 50, NULL),
+    (103, 'Sara', 2000, NULL, 'DISC20'),
+    (104, 'David', NULL, NULL, NULL),
+    (105, 'Priya', 1500, 100, NULL),
+    (106, 'Kiran', NULL, NULL, 'DISC5'),
+    (107, 'Ravi', 3000, NULL, NULL),
+    (108, 'Neha', NULL, 200, 'DISC15');
+    
+    -- =========================================
+    -- TABLE 3 : PRODUCTS
+    -- =========================================
+    
+    CREATE TABLE Products (
+        product_id INT,
+        product_name VARCHAR(50),
+        price INT,
+        category VARCHAR(50),
+        stock INT
+    );
+    
+    INSERT INTO Products VALUES
+    (1, 'Laptop', 50000, 'Electronics', 10),
+    (2, 'Phone', NULL, 'Electronics', NULL),
+    (3, 'Tablet', 30000, NULL, 5),
+    (4, 'Headphones', NULL, NULL, NULL),
+    (5, 'Monitor', 20000, 'Electronics', 0),
+    (6, 'Keyboard', NULL, 'Accessories', 15),
+    (7, 'Mouse', 500, NULL, NULL),
+    (8, 'Printer', NULL, 'Electronics', 3);
+    
+    -- =========================================
+    -- STRING FUNCTIONS TABLE
+    -- =========================================
+    
+    CREATE TABLE employees (
+        emp_id INT PRIMARY KEY,
+        full_name VARCHAR(100),
+        email VARCHAR(100),
+        department VARCHAR(50),
+        city VARCHAR(50),
+        salary VARCHAR(20),
+        remarks VARCHAR(200)
+    );
+    
+    INSERT INTO employees VALUES
+    (1, 'Karthik Kondpak', 'karthik.k@gmail.com', 'Data Engineering', 'Hyderabad', '75000', ' Top performer '),
+    
+    (2, 'Veena Reddy', 'veena_r@company.com', 'Analytics', 'Bangalore', '65000', 'Excellent communication'),
+    
+    (3, 'Ravi kumar', 'ravi.kumar@org.in', 'Data Science', 'Chennai', '85000', 'Needs improvement'),
+    
+    (4, 'Anil', 'anil@abc.com', 'DEVOPS', 'Pune', '70000', NULL),
+    
+    (5, ' Suresh ', 'suresh@xyz.com', 'data engineering', ' hyderabad ', '60000', ' ');
+
+---
+
+**Query #1**
+
+    -- =========================================
+    -- NULL FUNCTIONS QUERIES
+    -- =========================================
+    
+    -- 1. Employees whose salary is NULL
+    
+    SELECT *
+    FROM Employees
+    WHERE salary IS NULL;
+
+| emp_id | name  | salary | bonus | manager_id |
+| ------ | ----- | ------ | ----- | ---------- |
+| 2      | John  |        | 5000  | 102        |
+| 4      | David |        |       | 103        |
+| 6      | Kiran |        |       |            |
+| 8      | Neha  |        | 2000  |            |
+
+---
+**Query #2**
+
+    -- 2. Orders where discount is NOT NULL
+    
+    SELECT *
+    FROM Orders
+    WHERE discount IS NOT NULL;
+
+| order_id | customer_name | amount | discount | coupon_code |
+| -------- | ------------- | ------ | -------- | ----------- |
+| 102      | John          |        | 50       |             |
+| 105      | Priya         | 1500   | 100      |             |
+| 108      | Neha          |        | 200      | DISC15      |
+
+---
+**Query #3**
+
+    -- 3. Products where category is NULL
+    
+    SELECT *
+    FROM Products
+    WHERE category IS NULL;
+
+| product_id | product_name | price | category | stock |
+| ---------- | ------------ | ----- | -------- | ----- |
+| 3          | Tablet       | 30000 |          | 5     |
+| 4          | Headphones   |       |          |       |
+| 7          | Mouse        | 500   |          |       |
+
+---
+**Query #4**
+
+    -- 4. Count employees with NULL manager_id
+    
+    SELECT COUNT(*) AS total_null_manager
+    FROM Employees
+    WHERE manager_id IS NULL;
+
+| total_null_manager |
+| ------------------ |
+| 3                  |
+
+---
+**Query #5**
+
+    -- 5. Replace NULL salary with 0
+    
+    SELECT
+    emp_id,
+    name,
+    IFNULL(salary,0) AS salary
+    FROM Employees;
+
+| emp_id | name  | salary |
+| ------ | ----- | ------ |
+| 1      | Amit  | 50000  |
+| 2      | John  | 0      |
+| 3      | Sara  | 60000  |
+| 4      | David | 0      |
+| 5      | Priya | 45000  |
+| 6      | Kiran | 0      |
+| 7      | Ravi  | 70000  |
+| 8      | Neha  | 0      |
+
+---
+**Query #6**
+
+    -- 6. Replace NULL bonus with 1000
+    
+    SELECT
+    emp_id,
+    name,
+    IFNULL(bonus,1000) AS bonus
+    FROM Employees;
+
+| emp_id | name  | bonus |
+| ------ | ----- | ----- |
+| 1      | Amit  | 1000  |
+| 2      | John  | 5000  |
+| 3      | Sara  | 1000  |
+| 4      | David | 1000  |
+| 5      | Priya | 3000  |
+| 6      | Kiran | 1000  |
+| 7      | Ravi  | 7000  |
+| 8      | Neha  | 2000  |
+
+---
+**Query #7**
+
+    -- 7. Replace NULL amount with 500
+    
+    SELECT
+    order_id,
+    customer_name,
+    IFNULL(amount,500) AS amount
+    FROM Orders;
+
+| order_id | customer_name | amount |
+| -------- | ------------- | ------ |
+| 101      | Amit          | 1000   |
+| 102      | John          | 500    |
+| 103      | Sara          | 2000   |
+| 104      | David         | 500    |
+| 105      | Priya         | 1500   |
+| 106      | Kiran         | 500    |
+| 107      | Ravi          | 3000   |
+| 108      | Neha          | 500    |
+
+---
+**Query #8**
+
+    -- 8. Replace NULL stock with 0
+    
+    SELECT
+    product_id,
+    product_name,
+    IFNULL(stock,0) AS stock
+    FROM Products;
+
+| product_id | product_name | stock |
+| ---------- | ------------ | ----- |
+| 1          | Laptop       | 10    |
+| 2          | Phone        | 0     |
+| 3          | Tablet       | 5     |
+| 4          | Headphones   | 0     |
+| 5          | Monitor      | 0     |
+| 6          | Keyboard     | 15    |
+| 7          | Mouse        | 0     |
+| 8          | Printer      | 3     |
+
+---
+**Query #9**
+
+    -- 9. Employee earnings
+    
+    SELECT
+    emp_id,
+    name,
+    COALESCE(salary,bonus) AS earnings
+    FROM Employees;
+
+| emp_id | name  | earnings |
+| ------ | ----- | -------- |
+| 1      | Amit  | 50000    |
+| 2      | John  | 5000     |
+| 3      | Sara  | 60000    |
+| 4      | David |          |
+| 5      | Priya | 45000    |
+| 6      | Kiran |          |
+| 7      | Ravi  | 70000    |
+| 8      | Neha  | 2000     |
+
+---
+**Query #10**
+
+    -- 10. First available value
+    
+    SELECT
+    emp_id,
+    name,
+    COALESCE(salary,bonus,0) AS final_income
+    FROM Employees;
+
+| emp_id | name  | final_income |
+| ------ | ----- | ------------ |
+| 1      | Amit  | 50000        |
+| 2      | John  | 5000         |
+| 3      | Sara  | 60000        |
+| 4      | David | 0            |
+| 5      | Priya | 45000        |
+| 6      | Kiran | 0            |
+| 7      | Ravi  | 70000        |
+| 8      | Neha  | 2000         |
+
+---
+**Query #11**
+
+    -- 11. Product price default 1000
+    
+    SELECT
+    product_id,
+    product_name,
+    COALESCE(price,1000) AS final_price
+    FROM Products;
+
+| product_id | product_name | final_price |
+| ---------- | ------------ | ----------- |
+| 1          | Laptop       | 50000       |
+| 2          | Phone        | 1000        |
+| 3          | Tablet       | 30000       |
+| 4          | Headphones   | 1000        |
+| 5          | Monitor      | 20000       |
+| 6          | Keyboard     | 1000        |
+| 7          | Mouse        | 500         |
+| 8          | Printer      | 1000        |
+
+---
+**Query #12**
+
+    -- 12. Customer payment
+    
+    SELECT
+    order_id,
+    customer_name,
+    COALESCE(amount,discount,0) AS payment
+    FROM Orders;
+
+| order_id | customer_name | payment |
+| -------- | ------------- | ------- |
+| 101      | Amit          | 1000    |
+| 102      | John          | 50      |
+| 103      | Sara          | 2000    |
+| 104      | David         | 0       |
+| 105      | Priya         | 1500    |
+| 106      | Kiran         | 0       |
+| 107      | Ravi          | 3000    |
+| 108      | Neha          | 200     |
+
+---
+**Query #13**
+
+    -- 13. Convert salary to NULL if 0
+    
+    SELECT
+    emp_id,
+    name,
+    NULLIF(salary,0) AS salary_check
+    FROM Employees;
+
+| emp_id | name  | salary_check |
+| ------ | ----- | ------------ |
+| 1      | Amit  | 50000        |
+| 2      | John  |              |
+| 3      | Sara  | 60000        |
+| 4      | David |              |
+| 5      | Priya | 45000        |
+| 6      | Kiran |              |
+| 7      | Ravi  | 70000        |
+| 8      | Neha  |              |
+
+---
+**Query #14**
+
+    -- 14. Convert discount to NULL if 0
+    
+    SELECT
+    order_id,
+    NULLIF(discount,0) AS discount_check
+    FROM Orders;
+
+| order_id | discount_check |
+| -------- | -------------- |
+| 101      |                |
+| 102      | 50             |
+| 103      |                |
+| 104      |                |
+| 105      | 100            |
+| 106      |                |
+| 107      |                |
+| 108      | 200            |
+
+---
+**Query #15**
+
+    -- 15. Avoid divide by zero
+    
+    SELECT
+    order_id,
+    amount / NULLIF(discount,0) AS divide_result
+    FROM Orders;
+
+| order_id | divide_result |
+| -------- | ------------- |
+| 101      |               |
+| 102      |               |
+| 103      |               |
+| 104      |               |
+| 105      | 15.0          |
+| 106      |               |
+| 107      |               |
+| 108      |               |
+
+---
+**Query #16**
+
+    -- 16. Replace DISC10 with NULL
+    
+    SELECT
+    order_id,
+    NULLIF(coupon_code,'DISC10') AS coupon_code
+    FROM Orders;
+
+| order_id | coupon_code |
+| -------- | ----------- |
+| 101      |             |
+| 102      |             |
+| 103      | DISC20      |
+| 104      |             |
+| 105      |             |
+| 106      | DISC5       |
+| 107      |             |
+| 108      | DISC15      |
+
+---
+**Query #17**
+
+    -- 17. Total earnings
+    
+    SELECT
+    emp_id,
+    name,
+    IFNULL(salary,0) + IFNULL(bonus,0) AS total_earnings
+    FROM Employees;
+
+| emp_id | name  | total_earnings |
+| ------ | ----- | -------------- |
+| 1      | Amit  | 50000          |
+| 2      | John  | 5000           |
+| 3      | Sara  | 60000          |
+| 4      | David | 0              |
+| 5      | Priya | 48000          |
+| 6      | Kiran | 0              |
+| 7      | Ravi  | 77000          |
+| 8      | Neha  | 2000           |
+
+---
+**Query #18**
+
+    -- 18. Employees with salary and bonus NULL
+    
+    SELECT *
+    FROM Employees
+    WHERE salary IS NULL
+    AND bonus IS NULL;
+
+| emp_id | name  | salary | bonus | manager_id |
+| ------ | ----- | ------ | ----- | ---------- |
+| 4      | David |        |       | 103        |
+| 6      | Kiran |        |       |            |
+
+---
+**Query #19**
+
+    -- 19. Products where price NULL but category exists
+    
+    SELECT *
+    FROM Products
+    WHERE price IS NULL
+    AND category IS NOT NULL;
+
+| product_id | product_name | price | category    | stock |
+| ---------- | ------------ | ----- | ----------- | ----- |
+| 2          | Phone        |       | Electronics |       |
+| 6          | Keyboard     |       | Accessories | 15    |
+| 8          | Printer      |       | Electronics | 3     |
+
+---
+**Query #20**
+
+    -- 20. Orders where amount and discount NULL
+    
+    SELECT *
+    FROM Orders
+    WHERE amount IS NULL
+    AND discount IS NULL;
+
+| order_id | customer_name | amount | discount | coupon_code |
+| -------- | ------------- | ------ | -------- | ----------- |
+| 104      | David         |        |          |             |
+| 106      | Kiran         |        |          | DISC5       |
+
+---
+**Query #21**
+
+    -- 21. Employee income using COALESCE
+    
+    SELECT
+    emp_id,
+    name,
+    COALESCE(salary,bonus,1000) AS employee_income
+    FROM Employees;
+
+| emp_id | name  | employee_income |
+| ------ | ----- | --------------- |
+| 1      | Amit  | 50000           |
+| 2      | John  | 5000            |
+| 3      | Sara  | 60000           |
+| 4      | David | 1000            |
+| 5      | Priya | 45000           |
+| 6      | Kiran | 1000            |
+| 7      | Ravi  | 70000           |
+| 8      | Neha  | 2000            |
+
+---
+**Query #22**
+
+    -- 22. Replace empty discount with NULL
+    
+    SELECT
+    order_id,
+    NULLIF(discount,0) AS final_discount
+    FROM Orders;
+
+| order_id | final_discount |
+| -------- | -------------- |
+| 101      |                |
+| 102      | 50             |
+| 103      |                |
+| 104      |                |
+| 105      | 100            |
+| 106      |                |
+| 107      |                |
+| 108      | 200            |
+
+---
+**Query #23**
+
+    -- 23. Final payable amount
+    
+    SELECT
+    order_id,
+    customer_name,
+    IFNULL(amount,0) - IFNULL(discount,0) AS payable_amount
+    FROM Orders;
+
+| order_id | customer_name | payable_amount |
+| -------- | ------------- | -------------- |
+| 101      | Amit          | 1000           |
+| 102      | John          | -50            |
+| 103      | Sara          | 2000           |
+| 104      | David         | 0              |
+| 105      | Priya         | 1400           |
+| 106      | Kiran         | 0              |
+| 107      | Ravi          | 3000           |
+| 108      | Neha          | -200           |
+
+---
+**Query #24**
+
+    -- 24. Salary NULL but manager exists
+    
+    SELECT *
+    FROM Employees
+    WHERE salary IS NULL
+    AND manager_id IS NOT NULL;
+
+| emp_id | name  | salary | bonus | manager_id |
+| ------ | ----- | ------ | ----- | ---------- |
+| 2      | John  |        | 5000  | 102        |
+| 4      | David |        |       | 103        |
+
+---
+**Query #25**
+
+    -- =========================================
+    -- STRING FUNCTIONS QUERIES
+    -- =========================================
+    
+    -- 25. LENGTH / CHAR_LENGTH
+    
+    SELECT
+    full_name,
+    LENGTH(full_name) AS length_value
+    FROM employees;
+
+| full_name       | length_value |
+| --------------- | ------------ |
+| Karthik Kondpak | 15           |
+| Veena Reddy     | 11           |
+| Ravi kumar      | 10           |
+| Anil            | 4            |
+|  Suresh         | 8            |
+
+---
+**Query #26**
+
+    SELECT
+    full_name,
+    CHAR_LENGTH(full_name) AS char_length_value
+    FROM employees;
+
+| full_name       | char_length_value |
+| --------------- | ----------------- |
+| Karthik Kondpak | 15                |
+| Veena Reddy     | 11                |
+| Ravi kumar      | 10                |
+| Anil            | 4                 |
+|  Suresh         | 8                 |
+
+---
+**Query #27**
+
+    -- 26. UPPER / LOWER
+    
+    SELECT
+    UPPER(department) AS upper_department,
+    LOWER(city) AS lower_city
+    FROM employees;
+
+| upper_department | lower_city  |
+| ---------------- | ----------- |
+| DATA ENGINEERING | hyderabad   |
+| ANALYTICS        | bangalore   |
+| DATA SCIENCE     | chennai     |
+| DEVOPS           | pune        |
+| DATA ENGINEERING |  hyderabad  |
+
+---
+**Query #28**
+
+    -- 27. TRIM / LTRIM / RTRIM
+    
+    SELECT
+    TRIM(full_name) AS trim_name,
+    LTRIM(full_name) AS left_trim,
+    RTRIM(full_name) AS right_trim
+    FROM employees;
+
+| trim_name       | left_trim       | right_trim      |
+| --------------- | --------------- | --------------- |
+| Karthik Kondpak | Karthik Kondpak | Karthik Kondpak |
+| Veena Reddy     | Veena Reddy     | Veena Reddy     |
+| Ravi kumar      | Ravi kumar      | Ravi kumar      |
+| Anil            | Anil            | Anil            |
+| Suresh          | Suresh          |  Suresh         |
+
+---
+**Query #29**
+
+    -- 28. CONCAT
+    
+    SELECT
+    CONCAT(full_name, ' - ', department) AS emp_details
+    FROM employees;
+
+| emp_details                        |
+| ---------------------------------- |
+| Karthik Kondpak - Data Engineering |
+| Veena Reddy - Analytics            |
+| Ravi kumar - Data Science          |
+| Anil - DEVOPS                      |
+|  Suresh  - data engineering        |
+
+---
+**Query #30**
+
+    -- 29. CONCAT_WS
+    
+    SELECT
+    CONCAT_WS(' | ', emp_id, full_name, city)
+    AS employee_info
+    FROM employees;
+
+| employee_info                   |
+| ------------------------------- |
+| 1 | Karthik Kondpak | Hyderabad |
+| 2 | Veena Reddy | Bangalore     |
+| 3 | Ravi kumar | Chennai        |
+| 4 | Anil | Pune                 |
+| 5 |  Suresh  |  hyderabad       |
+
+---
+**Query #31**
+
+    -- 30. SUBSTRING / SUBSTR
+    
+    SELECT
+    SUBSTRING(email,1,7) AS substring_email
+    FROM employees;
+
+| substring_email |
+| --------------- |
+| karthik         |
+| veena_r         |
+| ravi.ku         |
+| anil@ab         |
+| suresh@         |
+
+---
+**Query #32**
+
+    SELECT
+    SUBSTR(email,1,5) AS substr_email
+    FROM employees;
+
+| substr_email |
+| ------------ |
+| karth        |
+| veena        |
+| ravi.        |
+| anil@        |
+| sures        |
+
+---
+**Query #33**
+
+    -- 31. LEFT / RIGHT
+    
+    SELECT
+    LEFT(full_name,4) AS left_name,
+    RIGHT(city,3) AS right_city
+    FROM employees;
+
+| left_name | right_city |
+| --------- | ---------- |
+| Kart      | bad        |
+| Veen      | ore        |
+| Ravi      | nai        |
+| Anil      | une        |
+|  Sur      | ad         |
+
+---
+**Query #34**
+
+    -- 32. INSTR
+    
+    SELECT
+    email,
+    INSTR(email,'@') AS at_position
+    FROM employees;
+
+| email               | at_position |
+| ------------------- | ----------- |
+| karthik.k@gmail.com | 10          |
+| veena_r@company.com | 8           |
+| ravi.kumar@org.in   | 11          |
+| anil@abc.com        | 5           |
+| suresh@xyz.com      | 7           |
+
+---
+**Query #35**
+
+    -- 33. LOCATE
+    
+    SELECT
+    email,
+    LOCATE('.',email) AS dot_position
+    FROM employees;
+
+| email               | dot_position |
+| ------------------- | ------------ |
+| karthik.k@gmail.com | 8            |
+| veena_r@company.com | 16           |
+| ravi.kumar@org.in   | 5            |
+| anil@abc.com        | 9            |
+| suresh@xyz.com      | 11           |
+
+---
+**Query #36**
+
+    -- 34. REPLACE
+    
+    SELECT
+    REPLACE(department,'Data','Big Data')
+    AS replaced_department
+    FROM employees;
+
+| replaced_department  |
+| -------------------- |
+| Big Data Engineering |
+| Analytics            |
+| Big Data Science     |
+| DEVOPS               |
+| data engineering     |
+
+---
+**Query #37**
+
+    -- 35. REVERSE
+    
+    SELECT
+    full_name,
+    REVERSE(full_name) AS reverse_name
+    FROM employees;
+
+| full_name       | reverse_name    |
+| --------------- | --------------- |
+| Karthik Kondpak | kapdnoK kihtraK |
+| Veena Reddy     | yddeR aneeV     |
+| Ravi kumar      | ramuk ivaR      |
+| Anil            | linA            |
+|  Suresh         |  hseruS         |
+
+---
+**Query #38**
+
+    -- 36. LPAD / RPAD
+    
+    SELECT
+    LPAD(emp_id,5,'0') AS padded_empid
+    FROM employees;
+
+| padded_empid |
+| ------------ |
+| 00001        |
+| 00002        |
+| 00003        |
+| 00004        |
+| 00005        |
+
+---
+**Query #39**
+
+    SELECT
+    RPAD(city,15,'*') AS padded_city
+    FROM employees;
+
+| padded_city     |
+| --------------- |
+| Hyderabad****** |
+| Bangalore****** |
+| Chennai******** |
+| Pune*********** |
+|  hyderabad **** |
+
+---
+**Query #40**
+
+    -- 37. TRIM + REPLACE
+    
+    SELECT
+    TRIM(REPLACE(city,' ',''))
+    AS cleaned_city
+    FROM employees;
+
+| cleaned_city |
+| ------------ |
+| Hyderabad    |
+| Bangalore    |
+| Chennai      |
+| Pune         |
+| hyderabad    |
+
+---
+**Query #41**
+
+    -- 38. IFNULL
+    
+    SELECT
+    full_name,
+    IFNULL(remarks,'No remarks')
+    AS final_remarks
+    FROM employees;
+
+| full_name       | final_remarks           |
+| --------------- | ----------------------- |
+| Karthik Kondpak |  Top performer          |
+| Veena Reddy     | Excellent communication |
+| Ravi kumar      | Needs improvement       |
+| Anil            | No remarks              |
+|  Suresh         |                         |
+
+---
+**Query #42**
+
+    -- 39. COALESCE
+    
+    SELECT
+    full_name,
+    COALESCE(remarks,'N/A')
+    AS remarks_value
+    FROM employees;
+
+| full_name       | remarks_value           |
+| --------------- | ----------------------- |
+| Karthik Kondpak |  Top performer          |
+| Veena Reddy     | Excellent communication |
+| Ravi kumar      | Needs improvement       |
+| Anil            | N/A                     |
+|  Suresh         |                         |
+
+---
+**Query #43**
+
+    -- 40. FIND_IN_SET
+    
+    SELECT
+    FIND_IN_SET(
+    'Analytics',
+    'Data,Analytics,AI'
+    ) AS position_value;
+
+| position_value |
+| -------------- |
+| 2              |
+
+---
+
+[View on DB Fiddle](https://www.db-fiddle.com/)
