@@ -1,0 +1,498 @@
+**Schema (MySQL v9)**
+
+    -- =========================================
+    -- REGEX FOUNDATION QUERIES
+    -- =========================================
+    
+    -- No table required for basic REGEX validation queries
+    
+    -- =========================================
+    -- CREATE TABLE
+    -- =========================================
+    
+    CREATE TABLE flipkart_raw_data (
+        order_id INT,
+        customer_id VARCHAR(20),
+        product VARCHAR(50),
+        category VARCHAR(50),
+        city VARCHAR(50),
+        order_date DATE,
+        amount INT,
+        quantity INT
+    );
+    
+    -- =========================================
+    -- INSERT DATA
+    -- =========================================
+    
+    INSERT INTO flipkart_raw_data VALUES
+    (1001,'C101','Laptop','Electronics','Hyderabad','2024-01-01',50000,1),
+    (1002,'C102','Mobile','Electronics','Chennai','2024-01-02',30000,2),
+    (1003,'C103','Tablet','Electronics',NULL,'2024-01-03',25000,1),
+    (1004,'C104','Watch','Accessories','Mumbai','2024-01-04',NULL,3),
+    (1005,'C105','Headphones','Accessories','Delhi','2024-01-05',-2000,2),
+    (1001,'C101','Laptop','Electronics','Hyderabad','2024-01-06',52000,1),
+    (1006,'C106','Mobile','Electronics',NULL,'2024-01-07',-3000,4),
+    (1007,'C107','Tablet','Electronics','Bangalore','2024-01-08',15000,1),
+    (1008,'C108','Watch','Accessories','Mumbai','2024-01-09',NULL,2),
+    (1002,'C102','Mobile','Electronics','Chennai','2024-01-10',32000,2);
+
+---
+
+**Query #1**
+
+    -- =========================================
+    -- REGEX FOUNDATION QUERIES
+    -- =========================================
+    
+    -- =========================================
+    -- 1. Extract Digits
+    -- =========================================
+    
+    SELECT '123ABc' REGEXP '[0-9]' AS digit_found;
+
+| digit_found |
+| ----------- |
+| 1           |
+
+---
+**Query #2**
+
+    -- =========================================
+    -- 2. Extract Alphabets
+    -- =========================================
+    
+    SELECT '123ABc' REGEXP '[A-Za-z]' AS alphabet_found;
+
+| alphabet_found |
+| -------------- |
+| 1              |
+
+---
+**Query #3**
+
+    -- =========================================
+    -- 3. Starts With Digit (^)
+    -- =========================================
+    
+    SELECT '123abc' REGEXP '^[0-9]' AS starts_with_digit;
+
+| starts_with_digit |
+| ----------------- |
+| 1                 |
+
+---
+**Query #4**
+
+    SELECT 'abc123' REGEXP '^[0-9]' AS starts_with_digit;
+
+| starts_with_digit |
+| ----------------- |
+| 0                 |
+
+---
+**Query #5**
+
+    -- =========================================
+    -- 4. Ends With Digit ($)
+    -- =========================================
+    
+    SELECT '123abc' REGEXP '[0-9]$' AS ends_with_digit;
+
+| ends_with_digit |
+| --------------- |
+| 0               |
+
+---
+**Query #6**
+
+    SELECT 'abc123' REGEXP '[0-9]$' AS ends_with_digit;
+
+| ends_with_digit |
+| --------------- |
+| 1               |
+
+---
+**Query #7**
+
+    -- =========================================
+    -- 5. Exact Characters Using {}
+    -- =========================================
+    
+    SELECT '12345678abc' REGEXP '[0-9]{2}' AS exact_two_digits;
+
+| exact_two_digits |
+| ---------------- |
+| 1                |
+
+---
+**Query #8**
+
+    SELECT 'abcdefghi123' REGEXP '[a-zA-Z]{2}' AS exact_two_letters;
+
+| exact_two_letters |
+| ----------------- |
+| 1                 |
+
+---
+**Query #9**
+
+    -- =========================================
+    -- 6. One or More Characters (+)
+    -- =========================================
+    
+    SELECT '123abc' REGEXP '[0-9]+' AS continuous_digits;
+
+| continuous_digits |
+| ----------------- |
+| 1                 |
+
+---
+**Query #10**
+
+    SELECT 'abc123' REGEXP '[0-9]+' AS continuous_digits;
+
+| continuous_digits |
+| ----------------- |
+| 1                 |
+
+---
+**Query #11**
+
+    SELECT 'abc123' REGEXP '[a-zA-Z]+' AS continuous_letters;
+
+| continuous_letters |
+| ------------------ |
+| 1                  |
+
+---
+**Query #12**
+
+    -- =========================================
+    -- 7. Principle of Continuity
+    -- =========================================
+    
+    SELECT '123abc567' REGEXP '[0-9]+' AS digit_continuity;
+
+| digit_continuity |
+| ---------------- |
+| 1                |
+
+---
+**Query #13**
+
+    SELECT 'abc123cde' REGEXP '[a-zA-Z]+' AS text_continuity;
+
+| text_continuity |
+| --------------- |
+| 1               |
+
+---
+**Query #14**
+
+    -- =========================================
+    -- 8. Extract Everything
+    -- =========================================
+    
+    SELECT '123abc567' REGEXP '[0-9a-zA-Z]+' AS extract_all;
+
+| extract_all |
+| ----------- |
+| 1           |
+
+---
+**Query #15**
+
+    -- =========================================
+    -- 9. Extract Digits From Middle
+    -- =========================================
+    
+    SELECT 'abc123gef' REGEXP '[0-9]+' AS middle_digits;
+
+| middle_digits |
+| ------------- |
+| 1             |
+
+---
+**Query #16**
+
+    -- =========================================
+    -- 10. Extract Domain Part
+    -- =========================================
+    
+    SELECT
+    SUBSTRING_INDEX('karthik@gmail.com','@',-1)
+    AS domain_name;
+
+| domain_name |
+| ----------- |
+| gmail.com   |
+
+---
+**Query #17**
+
+    -- =========================================
+    -- 11. Extract Top Level Domain
+    -- =========================================
+    
+    SELECT
+    SUBSTRING_INDEX('karthik@gmail.com','.',-1)
+    AS extension_name;
+
+| extension_name |
+| -------------- |
+| com            |
+
+---
+**Query #18**
+
+    -- =========================================
+    -- 12. Phone Number Validation
+    -- =========================================
+    
+    SELECT '+91-9989454737'
+    REGEXP '^\\+91-[0-9]{10}$'
+    AS valid_phone;
+
+| valid_phone |
+| ----------- |
+| 1           |
+
+---
+**Query #19**
+
+    -- =========================================
+    -- 13. Remove @ Symbol
+    -- =========================================
+    
+    SELECT
+    REPLACE('@gmail.com','@','')
+    AS cleaned_domain;
+
+| cleaned_domain |
+| -------------- |
+| gmail.com      |
+
+---
+**Query #20**
+
+    -- =========================================
+    -- 14. Valid Email Validation
+    -- =========================================
+    
+    SELECT
+    'karthik@gmail.com'
+    REGEXP '^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+\\.[a-zA-Z]{2,3}$'
+    AS valid_email;
+
+| valid_email |
+| ----------- |
+| 1           |
+
+---
+**Query #21**
+
+    SELECT
+    'karthik44@gmail.com'
+    REGEXP '^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+\\.[a-zA-Z]{2,3}$'
+    AS valid_email;
+
+| valid_email |
+| ----------- |
+| 1           |
+
+---
+**Query #22**
+
+    SELECT
+    'vinay@infosys.com'
+    REGEXP '^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+\\.[a-zA-Z]{2,3}$'
+    AS valid_email;
+
+| valid_email |
+| ----------- |
+| 1           |
+
+---
+**Query #23**
+
+    -- =========================================
+    -- 15. Invalid Email Example
+    -- =========================================
+    
+    SELECT
+    '@gmail.com'
+    REGEXP '^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+\\.[a-zA-Z]{2,3}$'
+    AS invalid_email;
+
+| invalid_email |
+| ------------- |
+| 0             |
+
+---
+**Query #24**
+
+    -- =========================================
+    -- 16. Username Validation
+    -- =========================================
+    
+    SELECT
+    'karthik.kumar44'
+    REGEXP '^[a-zA-Z0-9._-]+$'
+    AS valid_username;
+
+| valid_username |
+| -------------- |
+| 1              |
+
+---
+**Query #25**
+
+    -- =========================================
+    -- 17. Domain Validation
+    -- =========================================
+    
+    SELECT
+    'gmail'
+    REGEXP '^[a-zA-Z0-9]+$'
+    AS valid_domain;
+
+| valid_domain |
+| ------------ |
+| 1            |
+
+---
+**Query #26**
+
+    -- =========================================
+    -- 18. Extension Validation
+    -- =========================================
+    
+    SELECT
+    'com'
+    REGEXP '^[a-zA-Z]{2,3}$'
+    AS valid_extension;
+
+| valid_extension |
+| --------------- |
+| 1               |
+
+---
+**Query #27**
+
+    -- =========================================
+    -- 19. Full Email Structure Validation
+    -- =========================================
+    
+    SELECT
+    'karthik_kumar44@gmail.com'
+    REGEXP '^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+\\.[a-zA-Z]{2,3}$'
+    AS final_email_validation;
+
+| final_email_validation |
+| ---------------------- |
+| 1                      |
+
+---
+**Query #28**
+
+    -- =========================================
+    -- FLIPKART RAW DATA ANALYSIS
+    -- =========================================
+    
+    -- =========================================
+    -- TOTAL RECORDS
+    -- =========================================
+    
+    SELECT COUNT(*) AS total_records
+    FROM flipkart_raw_data;
+
+| total_records |
+| ------------- |
+| 10            |
+
+---
+**Query #29**
+
+    -- =========================================
+    -- NULL VALUES
+    -- =========================================
+    
+    SELECT *
+    FROM flipkart_raw_data
+    WHERE amount IS NULL;
+
+| order_id | customer_id | product | category    | city   | order_date | amount | quantity |
+| -------- | ----------- | ------- | ----------- | ------ | ---------- | ------ | -------- |
+| 1004     | C104        | Watch   | Accessories | Mumbai | 2024-01-04 |        | 3        |
+| 1008     | C108        | Watch   | Accessories | Mumbai | 2024-01-09 |        | 2        |
+
+---
+**Query #30**
+
+    SELECT *
+    FROM flipkart_raw_data
+    WHERE city IS NULL;
+
+| order_id | customer_id | product | category    | city | order_date | amount | quantity |
+| -------- | ----------- | ------- | ----------- | ---- | ---------- | ------ | -------- |
+| 1003     | C103        | Tablet  | Electronics |      | 2024-01-03 | 25000  | 1        |
+| 1006     | C106        | Mobile  | Electronics |      | 2024-01-07 | -3000  | 4        |
+
+---
+**Query #31**
+
+    -- =========================================
+    -- NEGATIVE VALUES
+    -- =========================================
+    
+    SELECT *
+    FROM flipkart_raw_data
+    WHERE amount < 0;
+
+| order_id | customer_id | product    | category    | city  | order_date | amount | quantity |
+| -------- | ----------- | ---------- | ----------- | ----- | ---------- | ------ | -------- |
+| 1005     | C105        | Headphones | Accessories | Delhi | 2024-01-05 | -2000  | 2        |
+| 1006     | C106        | Mobile     | Electronics |       | 2024-01-07 | -3000  | 4        |
+
+---
+**Query #32**
+
+    -- =========================================
+    -- DUPLICATE ORDER IDS
+    -- =========================================
+    
+    SELECT
+    order_id,
+    COUNT(*) AS duplicate_count
+    FROM flipkart_raw_data
+    GROUP BY order_id
+    HAVING COUNT(*) > 1;
+
+| order_id | duplicate_count |
+| -------- | --------------- |
+| 1001     | 2               |
+| 1002     | 2               |
+
+---
+**Query #33**
+
+    -- =========================================
+    -- UPDATED RECORDS
+    -- =========================================
+    
+    SELECT
+    order_id,
+    COUNT(DISTINCT order_date) AS different_dates
+    FROM flipkart_raw_data
+    GROUP BY order_id
+    HAVING COUNT(DISTINCT order_date) > 1;
+
+| order_id | different_dates |
+| -------- | --------------- |
+| 1001     | 2               |
+| 1002     | 2               |
+
+---
+
+[View on DB Fiddle](https://www.db-fiddle.com/)
