@@ -1,0 +1,180 @@
+**Schema (MySQL v9)**
+
+    -- =========================================
+    -- WINDOW FUNCTIONS PRACTICE IN MYSQL
+    -- =========================================
+    
+    -- =========================================
+    -- CREATE TABLE : EMPLOYEES
+    -- =========================================
+    
+    CREATE TABLE employees (
+        emp_id INT,
+        emp_name VARCHAR(50),
+        department VARCHAR(50),
+        salary INT,
+        join_date DATE
+    );
+    
+    -- =========================================
+    -- INSERT DATA : EMPLOYEES
+    -- =========================================
+    
+    INSERT INTO employees VALUES
+    (1, 'Amit', 'HR', 50000, '2023-01-01'),
+    (2, 'Ravi', 'IT', 65000, '2023-01-05'),
+    (3, 'Sneha', 'Finance', 70000, '2023-01-03'),
+    (4, 'Kiran', 'IT', 60000, '2023-01-10'),
+    (5, 'Priya', 'HR', 55000, '2023-01-07'),
+    (6, 'Arjun', 'Finance', 75000, '2023-01-12'),
+    (7, 'Neha', 'IT', 62000, '2023-01-15'),
+    (8, 'Vikas', 'HR', 52000, '2023-01-18'),
+    (9, 'Anjali', 'Finance', 72000, '2023-01-20'),
+    (10, 'Rahul', 'IT', 68000, '2023-01-25');
+    
+    -- =========================================
+    -- CREATE TABLE : ORDERS
+    -- =========================================
+    
+    CREATE TABLE orders (
+        order_id INT,
+        customer_name VARCHAR(50),
+        city VARCHAR(50),
+        amount INT,
+        order_date DATE
+    );
+    
+    -- =========================================
+    -- INSERT DATA : ORDERS
+    -- =========================================
+    
+    INSERT INTO orders VALUES
+    (1, 'Amit', 'Chennai', 2000, '2023-01-01'),
+    (2, 'Ravi', 'Hyderabad', 1500, '2023-01-02'),
+    (3, 'Sneha', 'Chennai', 3000, '2023-01-03'),
+    (4, 'Kiran', 'Bangalore', 2500, '2023-01-04'),
+    (5, 'Priya', 'Chennai', 2000, '2023-01-05'),
+    (6, 'Arjun', 'Hyderabad', 1800, '2023-01-06'),
+    (7, 'Neha', 'Bangalore', 2200, '2023-01-07'),
+    (8, 'Vikas', 'Chennai', 3000, '2023-01-08'),
+    (9, 'Anjali', 'Hyderabad', 1700, '2023-01-09'),
+    (10, 'Rahul', 'Bangalore', 2600, '2023-01-10'),
+    (11, 'Suresh', 'Chennai', 2800, '2023-01-11'),
+    (12, 'Pooja', 'Hyderabad', 1600, '2023-01-12'),
+    (13, 'Manoj', 'Bangalore', 2400, '2023-01-13'),
+    (14, 'Divya', 'Chennai', 2100, '2023-01-14'),
+    (15, 'Karthik', 'Hyderabad', 1900, '2023-01-15'),
+    (16, 'Meena', 'Bangalore', 2300, '2023-01-16'),
+    (17, 'Raj', 'Chennai', 2700, '2023-01-17'),
+    (18, 'Simran', 'Hyderabad', 2000, '2023-01-18'),
+    (19, 'Deepak', 'Bangalore', 2500, '2023-01-19'),
+    (20, 'Nisha', 'Chennai', 2600, '2023-01-20');
+
+---
+
+**Query #1**
+
+    -- =========================================
+    -- DENSE_RANK() QUERIES
+    -- =========================================
+    
+    -- 19. Dense rank employees based on joining date
+    
+    SELECT
+    emp_name,
+    join_date,
+    DENSE_RANK() OVER(
+    ORDER BY join_date DESC
+    ) AS dense_join_rank
+    FROM employees;
+
+| emp_name | join_date  | dense_join_rank |
+| -------- | ---------- | --------------- |
+| Rahul    | 2023-01-25 | 1               |
+| Anjali   | 2023-01-20 | 2               |
+| Vikas    | 2023-01-18 | 3               |
+| Neha     | 2023-01-15 | 4               |
+| Arjun    | 2023-01-12 | 5               |
+| Kiran    | 2023-01-10 | 6               |
+| Priya    | 2023-01-07 | 7               |
+| Ravi     | 2023-01-05 | 8               |
+| Sneha    | 2023-01-03 | 9               |
+| Amit     | 2023-01-01 | 10              |
+
+---
+**Query #2**
+
+    -- 20. Dense rank orders based on amount
+    
+    SELECT
+    order_id,
+    amount,
+    DENSE_RANK() OVER(
+    ORDER BY amount DESC
+    ) AS dense_amount_rank
+    FROM orders;
+
+| order_id | amount | dense_amount_rank |
+| -------- | ------ | ----------------- |
+| 3        | 3000   | 1                 |
+| 8        | 3000   | 1                 |
+| 11       | 2800   | 2                 |
+| 17       | 2700   | 3                 |
+| 20       | 2600   | 4                 |
+| 10       | 2600   | 4                 |
+| 4        | 2500   | 5                 |
+| 19       | 2500   | 5                 |
+| 13       | 2400   | 6                 |
+| 16       | 2300   | 7                 |
+| 7        | 2200   | 8                 |
+| 14       | 2100   | 9                 |
+| 5        | 2000   | 10                |
+| 18       | 2000   | 10                |
+| 1        | 2000   | 10                |
+| 15       | 1900   | 11                |
+| 6        | 1800   | 12                |
+| 9        | 1700   | 13                |
+| 12       | 1600   | 14                |
+| 2        | 1500   | 15                |
+
+---
+**Query #3**
+
+    -- 21. Dense rank within city based on amount
+    
+    SELECT
+    order_id,
+    city,
+    amount,
+    DENSE_RANK() OVER(
+    PARTITION BY city
+    ORDER BY amount DESC
+    ) AS dense_city_rank
+    FROM orders;
+
+| order_id | city      | amount | dense_city_rank |
+| -------- | --------- | ------ | --------------- |
+| 10       | Bangalore | 2600   | 1               |
+| 19       | Bangalore | 2500   | 2               |
+| 4        | Bangalore | 2500   | 2               |
+| 13       | Bangalore | 2400   | 3               |
+| 16       | Bangalore | 2300   | 4               |
+| 7        | Bangalore | 2200   | 5               |
+| 3        | Chennai   | 3000   | 1               |
+| 8        | Chennai   | 3000   | 1               |
+| 11       | Chennai   | 2800   | 2               |
+| 17       | Chennai   | 2700   | 3               |
+| 20       | Chennai   | 2600   | 4               |
+| 14       | Chennai   | 2100   | 5               |
+| 5        | Chennai   | 2000   | 6               |
+| 1        | Chennai   | 2000   | 6               |
+| 18       | Hyderabad | 2000   | 1               |
+| 15       | Hyderabad | 1900   | 2               |
+| 6        | Hyderabad | 1800   | 3               |
+| 9        | Hyderabad | 1700   | 4               |
+| 12       | Hyderabad | 1600   | 5               |
+| 2        | Hyderabad | 1500   | 6               |
+
+---
+
+[View on DB Fiddle](https://www.db-fiddle.com/)
