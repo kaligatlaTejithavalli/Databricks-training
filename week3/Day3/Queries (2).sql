@@ -1,18 +1,19 @@
 -- =========================================
 -- RANK() QUERIES
 -- =========================================
-
--- 9. Rank employees based on highest salary
+-- 13. Rank orders within city based on amount
 
 SELECT
-emp_name,
-salary,
+order_id,
+city,
+amount,
 RANK() OVER(
-ORDER BY salary DESC
-) AS salary_rank
-FROM employees;
+PARTITION BY city
+ORDER BY amount DESC
+) AS city_rank
+FROM orders;
 
--- 10. Rank employees within department based on salary
+-- 14. Rank employees within department based on lowest salary
 
 SELECT
 emp_name,
@@ -20,26 +21,15 @@ department,
 salary,
 RANK() OVER(
 PARTITION BY department
-ORDER BY salary DESC
-) AS dept_rank
+ORDER BY salary
+) AS dept_salary_rank
 FROM employees;
 
--- 11. Rank employees based on latest joining date
+-- 15. Rank employees based on name alphabetically
 
 SELECT
 emp_name,
-join_date,
 RANK() OVER(
-ORDER BY join_date DESC
-) AS join_rank
+ORDER BY emp_name
+) AS name_rank
 FROM employees;
-
--- 12. Rank orders based on amount
-
-SELECT
-order_id,
-amount,
-RANK() OVER(
-ORDER BY amount DESC
-) AS amount_rank
-FROM orders;
