@@ -1,0 +1,176 @@
+**Schema (MySQL v9)**
+
+    -- =========================================
+    -- WINDOW FUNCTIONS PRACTICE IN MYSQL
+    -- =========================================
+    
+    -- =========================================
+    -- CREATE TABLE : EMPLOYEES
+    -- =========================================
+    
+    CREATE TABLE employees (
+        emp_id INT,
+        emp_name VARCHAR(50),
+        department VARCHAR(50),
+        salary INT,
+        join_date DATE
+    );
+    
+    -- =========================================
+    -- INSERT DATA : EMPLOYEES
+    -- =========================================
+    
+    INSERT INTO employees VALUES
+    (1, 'Amit', 'HR', 50000, '2023-01-01'),
+    (2, 'Ravi', 'IT', 65000, '2023-01-05'),
+    (3, 'Sneha', 'Finance', 70000, '2023-01-03'),
+    (4, 'Kiran', 'IT', 60000, '2023-01-10'),
+    (5, 'Priya', 'HR', 55000, '2023-01-07'),
+    (6, 'Arjun', 'Finance', 75000, '2023-01-12'),
+    (7, 'Neha', 'IT', 62000, '2023-01-15'),
+    (8, 'Vikas', 'HR', 52000, '2023-01-18'),
+    (9, 'Anjali', 'Finance', 72000, '2023-01-20'),
+    (10, 'Rahul', 'IT', 68000, '2023-01-25');
+    
+    -- =========================================
+    -- CREATE TABLE : ORDERS
+    -- =========================================
+    
+    CREATE TABLE orders (
+        order_id INT,
+        customer_name VARCHAR(50),
+        city VARCHAR(50),
+        amount INT,
+        order_date DATE
+    );
+    
+    -- =========================================
+    -- INSERT DATA : ORDERS
+    -- =========================================
+    
+    INSERT INTO orders VALUES
+    (1, 'Amit', 'Chennai', 2000, '2023-01-01'),
+    (2, 'Ravi', 'Hyderabad', 1500, '2023-01-02'),
+    (3, 'Sneha', 'Chennai', 3000, '2023-01-03'),
+    (4, 'Kiran', 'Bangalore', 2500, '2023-01-04'),
+    (5, 'Priya', 'Chennai', 2000, '2023-01-05'),
+    (6, 'Arjun', 'Hyderabad', 1800, '2023-01-06'),
+    (7, 'Neha', 'Bangalore', 2200, '2023-01-07'),
+    (8, 'Vikas', 'Chennai', 3000, '2023-01-08'),
+    (9, 'Anjali', 'Hyderabad', 1700, '2023-01-09'),
+    (10, 'Rahul', 'Bangalore', 2600, '2023-01-10'),
+    (11, 'Suresh', 'Chennai', 2800, '2023-01-11'),
+    (12, 'Pooja', 'Hyderabad', 1600, '2023-01-12'),
+    (13, 'Manoj', 'Bangalore', 2400, '2023-01-13'),
+    (14, 'Divya', 'Chennai', 2100, '2023-01-14'),
+    (15, 'Karthik', 'Hyderabad', 1900, '2023-01-15'),
+    (16, 'Meena', 'Bangalore', 2300, '2023-01-16'),
+    (17, 'Raj', 'Chennai', 2700, '2023-01-17'),
+    (18, 'Simran', 'Hyderabad', 2000, '2023-01-18'),
+    (19, 'Deepak', 'Bangalore', 2500, '2023-01-19'),
+    (20, 'Nisha', 'Chennai', 2600, '2023-01-20');
+
+---
+
+**Query #1**
+
+    -- =========================================
+    -- RANK() QUERIES
+    -- =========================================
+    
+    -- 16. Rank orders within city based on order date
+    
+    SELECT
+    order_id,
+    city,
+    order_date,
+    RANK() OVER(
+    PARTITION BY city
+    ORDER BY order_date
+    ) AS order_rank
+    FROM orders;
+
+| order_id | city      | order_date | order_rank |
+| -------- | --------- | ---------- | ---------- |
+| 4        | Bangalore | 2023-01-04 | 1          |
+| 7        | Bangalore | 2023-01-07 | 2          |
+| 10       | Bangalore | 2023-01-10 | 3          |
+| 13       | Bangalore | 2023-01-13 | 4          |
+| 16       | Bangalore | 2023-01-16 | 5          |
+| 19       | Bangalore | 2023-01-19 | 6          |
+| 1        | Chennai   | 2023-01-01 | 1          |
+| 3        | Chennai   | 2023-01-03 | 2          |
+| 5        | Chennai   | 2023-01-05 | 3          |
+| 8        | Chennai   | 2023-01-08 | 4          |
+| 11       | Chennai   | 2023-01-11 | 5          |
+| 14       | Chennai   | 2023-01-14 | 6          |
+| 17       | Chennai   | 2023-01-17 | 7          |
+| 20       | Chennai   | 2023-01-20 | 8          |
+| 2        | Hyderabad | 2023-01-02 | 1          |
+| 6        | Hyderabad | 2023-01-06 | 2          |
+| 9        | Hyderabad | 2023-01-09 | 3          |
+| 12       | Hyderabad | 2023-01-12 | 4          |
+| 15       | Hyderabad | 2023-01-15 | 5          |
+| 18       | Hyderabad | 2023-01-18 | 6          |
+
+---
+**Query #2**
+
+    -- =========================================
+    -- DENSE_RANK() QUERIES
+    -- =========================================
+    
+    -- 17. Dense rank employees based on salary descending
+    
+    SELECT
+    emp_name,
+    salary,
+    DENSE_RANK() OVER(
+    ORDER BY salary DESC
+    ) AS dense_salary_rank
+    FROM employees;
+
+| emp_name | salary | dense_salary_rank |
+| -------- | ------ | ----------------- |
+| Arjun    | 75000  | 1                 |
+| Anjali   | 72000  | 2                 |
+| Sneha    | 70000  | 3                 |
+| Rahul    | 68000  | 4                 |
+| Ravi     | 65000  | 5                 |
+| Neha     | 62000  | 6                 |
+| Kiran    | 60000  | 7                 |
+| Priya    | 55000  | 8                 |
+| Vikas    | 52000  | 9                 |
+| Amit     | 50000  | 10                |
+
+---
+**Query #3**
+
+    -- 18. Dense rank within department based on salary
+    
+    SELECT
+    emp_name,
+    department,
+    salary,
+    DENSE_RANK() OVER(
+    PARTITION BY department
+    ORDER BY salary DESC
+    ) AS dense_dept_rank
+    FROM employees;
+
+| emp_name | department | salary | dense_dept_rank |
+| -------- | ---------- | ------ | --------------- |
+| Arjun    | Finance    | 75000  | 1               |
+| Anjali   | Finance    | 72000  | 2               |
+| Sneha    | Finance    | 70000  | 3               |
+| Priya    | HR         | 55000  | 1               |
+| Vikas    | HR         | 52000  | 2               |
+| Amit     | HR         | 50000  | 3               |
+| Rahul    | IT         | 68000  | 1               |
+| Ravi     | IT         | 65000  | 2               |
+| Neha     | IT         | 62000  | 3               |
+| Kiran    | IT         | 60000  | 4               |
+
+---
+
+[View on DB Fiddle](https://www.db-fiddle.com/)
